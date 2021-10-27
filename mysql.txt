@@ -1,0 +1,6 @@
+ CREATE TABLE postac(id_postaci INT PRIMARY KEY,  nazwa VARCHAR(40), rodzaj ENUM('wiking', 'ptak', 'kobieta'), data_ur DATE, wiek INT);
+INSERT INTO postac VALUES(1, "Bjorn", "Wiking", NULL, NULL);
+INSERT INTO postac VALUES(2, "Drozd", "ptak", 20190101, 2);
+ INSERT INTO postac VALUES(3, "Tesciowa", "kobieta", 19710101, 50);
+ CREATE TABLE walizka(id_walizki INT PRIMARY KEY, pojemnosc INT UNSIGNED,
+kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty'), id_wlasciciela INT);
