@@ -1,6 +1,48 @@
- CREATE TABLE postac(id_postaci INT PRIMARY KEY,  nazwa VARCHAR(40), rodzaj ENUM('wiking', 'ptak', 'kobieta'), data_ur DATE, wiek INT);
+ CREATE TABLE postac(id_postaci INT PRIMARY KEY,  nazwa VARCHAR(40), rodzaj ENUM('wiking', 'ptak', 'kobieta'), 
+data_ur DATE, wiek INT);
 INSERT INTO postac VALUES(1, "Bjorn", "Wiking", NULL, NULL);
 INSERT INTO postac VALUES(2, "Drozd", "ptak", 20190101, 2);
  INSERT INTO postac VALUES(3, "Tesciowa", "kobieta", 19710101, 50);
+
+
  CREATE TABLE walizka(id_walizki INT PRIMARY KEY, pojemnosc INT UNSIGNED,
-kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty'), id_wlasciciela INT);
+ kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty') NOT NULL DEFAULT 'rozowy', 
+id_wlasciciela INT, FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci));
+
+
+CREATE TABLE izba(id_izby INT PRIMARY KEY, adres_budynku VARCHAR(40), nazwa_izby VARCHAR(40), 
+metraz INT UNSIGNED, wlasciciel INT, FOREIGN KEY (wlasciciel) REFERENCES postac(id_postaci));
+
+ALTER TABLE izba ADD kolor_izby VARCHAR(20) NOT NULL DEFAULT 'czarny';
+
+ALTER TABLE izba MODIFY kolor_izby VARCHAR(20) AFTER metraz;
+
+AlTER TABLE izba ADD izba_spi¿arnia VARCHAR (250);
+
+
+
+CREATE TABLE przetwory( id_przetworu INT PRIMARY KEY, rok_produkcji YEAR, id_wykonawcy INT, 
+FOREIGN (id_wykonawcy) KEY REFERENCES postac(id_postaci), zawartosc VARCHAR(40), 
+dodatek VARCHAR(40) NOT NULL DEFAULT 'papryczka chilli', id_konsumenta INT, 
+FOREIGN KEY (id_konsumenta) REFERENCES postac(id_postaci));
+
+INSERT INTO przetwory VALUES (1, 2021, 2, NULL, bigos , papryczka chilli, 3);
+
+
+
+INSERT INTO postac VALUES (4, 'Thor', 'Wiking', 19180212, 123);
+INSERT INTO postac VALUES (5, 'Ornn', 'Wiking', 19231010, 98);
+INSERT INTO postac VALUES (6, 'Byrnjolf', 'Wiking', 19670711, 54);
+INSERT INTO postac VALUES (7, 'Ljot', 'Wiking', 19870605, 34);
+INSERT INTO postac VALUES (8, 'Olaf', 'Wiking', 18671201, 154);
+
+
+CREATE TABLE statek(id_statku INT PRIMARY KEY, rodzaj_statku ENUM ('wojenny', 'handlowy', 'pasa¿erski'), 
+data_wodowania DATE, max_ladownosc INT UNSIGNED);
+
+INSERT INTO statek VALUES(1, 'wojenny', 20211103, 5750);
+INSERT INTO statek VALUES(2, 'handlowy', 20191209, 15750);
+
+ALTER TABLE postac ADD funkcja VARCHAR(40);
+
+INSERT INTO postac 
