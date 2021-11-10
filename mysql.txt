@@ -22,11 +22,11 @@ AlTER TABLE izba ADD izba_spi¿arnia VARCHAR (250);
 
 
 CREATE TABLE przetwory( id_przetworu INT PRIMARY KEY, rok_produkcji YEAR, id_wykonawcy INT, 
-FOREIGN (id_wykonawcy) KEY REFERENCES postac(id_postaci), zawartosc VARCHAR(40), 
+FOREIGN KEY (id_wykonawcy) REFERENCES postac(id_postaci), zawartosc VARCHAR(40), 
 dodatek VARCHAR(40) NOT NULL DEFAULT 'papryczka chilli', id_konsumenta INT, 
 FOREIGN KEY (id_konsumenta) REFERENCES postac(id_postaci));
 
-INSERT INTO przetwory VALUES (1, 2021, 2, NULL, bigos , papryczka chilli, 3);
+INSERT INTO przetwory VALUES ('1', '2021', '2', 'bigos', 'papryczka chilli' , '4');
 
 
 
@@ -37,12 +37,63 @@ INSERT INTO postac VALUES (7, 'Ljot', 'Wiking', 19870605, 34);
 INSERT INTO postac VALUES (8, 'Olaf', 'Wiking', 18671201, 154);
 
 
-CREATE TABLE statek(id_statku INT PRIMARY KEY, rodzaj_statku ENUM ('wojenny', 'handlowy', 'pasa¿erski'), 
+CREATE TABLE statek(id_statku INT PRIMARY KEY, rodzaj_statku ENUM ('wojenny', 'handlowy', 'pasazerski'), 
 data_wodowania DATE, max_ladownosc INT UNSIGNED);
 
 INSERT INTO statek VALUES(1, 'wojenny', 20211103, 5750);
 INSERT INTO statek VALUES(2, 'handlowy', 20191209, 15750);
 
-ALTER TABLE postac ADD funkcja VARCHAR(40);
+ALTER TABLE postac ADD funkcja VARCHAR(40); 
 
-INSERT INTO postac 
+update postac set funkcja='kapitan' where nazwa='Bjorn';
+alter table postac add id_statku INT;
+update postac set id_statku='1';
+alter table izba drop column izba_spiarnia;
+drop table izba;
+
+alter table przetwory drop foreign key przetwory_ibfk_2;
+delete from postac where id_postaci='4';
+delete from postac where id_postaci='8';
+alter table walizka drop foreign key walizka_ibfk_1;
+alter table przetwory drop foreign key przetwory_ibfk_1;
+alter table postac drop primary key;
+alter table postac add column pesel VARCHAR(11);
+update postac set pesel='11450091565' where id_postaci='7';
+alter table postac add primary key (pesel);
+
+alter table postac drop column rodzaj;
+alter table postac add column rodzaj ENUM('wiking', 'ptak', 'tesciowa', 'syrena');
+insert into postac  values('9', 'Gertruda Nieszczera', NULL, 'syrena', NULL, NULL, '1', '12345678909');
+INSERT INTO statek VALUES(3, 'pasaerski', 20191011, 10750);
+update statek set data_wodowania='19831102' where id_statku='1';
++-----------+---------------+----------------+---------------+
+| id_statku | rodzaj_statku | data_wodowania | max_ladownosc |
++-----------+---------------+----------------+---------------+
+|         1 | wojenny       | 1983-11-02     |          5750 |
+|         2 | handlowy      | 2019-12-09     |         15750 |
+|         3 | pasaerski     | 2019-10-11     |         10750 |
++-----------+---------------+----------------+---------------+
+
+update statek set max_ladownosc='4025' where id_statku = '1';
+
++-----------+---------------+----------------+---------------+
+| id_statku | rodzaj_statku | data_wodowania | max_ladownosc |
++-----------+---------------+----------------+---------------+
+|         1 | wojenny       | 1983-11-02     |          4025 |
+|         2 | handlowy      | 2019-12-09     |         15750 |
+|         3 | pasaerski     | 2019-10-11     |         10750 |
++-----------+---------------+----------------+---------------+
+
+
+
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
+| id_postaci | nazwa               | data_ur    | rodzaj   | wiek | funkcja | id_statku | pesel       |
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
+|          1 | Bjorn               | NULL       | wiking   | NULL | kapitan |         1 | 01072798765 |
+|          3 | Tesciowa            | 1971-01-01 | tesciowa |   50 | NULL    |         1 | 07652766565 |
+|          2 | Drozd               | 2019-01-01 | ptak     |    2 | NULL    |         2 | 07652798765 |
+|          7 | Ljot                | 1987-06-05 | wiking   |   34 | NULL    |         2 | 11450091565 |
+|          6 | Byrnjolf            | 1967-07-11 | wiking   |   54 | NULL    |         2 | 11454221565 |
+|          5 | Ornn                | 1923-10-10 | wiking   |   98 | NULL    |         2 | 11642766565 |
+|          9 | Gertruda Nieszczera | NULL       | syrena   | NULL | NULL    |         1 | 12345678909 |
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
