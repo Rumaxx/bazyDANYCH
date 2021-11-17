@@ -97,3 +97,30 @@ update statek set max_ladownosc='4025' where id_statku = '1';
 |          5 | Ornn                | 1923-10-10 | wiking   |   98 | NULL    |         2 | 11642766565 |
 |          9 | Gertruda Nieszczera | NULL       | syrena   | NULL | NULL    |         1 | 12345678909 |
 +------------+---------------------+------------+----------+------+---------+-----------+-------------+
+
+alter table postac add constraint wiek check (wiek<1000);
+insert into marynarz select * from postac where id_postaci;
+delete from marynarz where id_marynarza='10';
+update marynarz set id_statku =NULL ;
+update postac set id_statku =NULL ;
+delete from postac where id_postaci='6';
+delete from marynarz where id_marynarza='6';
+delete from statek where id_statku = '1';
+delete from statek where id_statku = '2';
+delete from statek where id_statku = '3';
+drop table statek;
+
+create table zwierz(id_zwierz INT PRIMARY KEY AUTO_INCREMENT, nazwa VARCHAR(40) NOT NULL, wiek INT UNSIGNED);
+insert into zwierz values(10, 'Loko', 19);
+insert into zwierz values(2, 'Drozd', 2);
+
+create table kreatura as select * from wikingowie.kreatura;
+create table zasoby as select * from wikingowie.zasoby;
+create table ekwipunek as select * from wikingowie.ekwipunek;
+select * from zasob;
+select * from zasob where rodzaj = 'jedzenie';
+
+select idzasobu, ilosc from ekwipunek where idkreatury= '1' and '3' and '5';
+select * from kreatura where rodzaj != 'wiedzma' and udzwig > 50;
+select * from zasob where (waga > 2 and waga < 5);
+select * from kreatura where nazwa like  '%or%' and (udzwig > 30 and udzwig < 70);
