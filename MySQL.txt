@@ -1,0 +1,157 @@
+Lekcja 1.
+Zad.1 
+CREATE TABLE postac(id_postaci INT PRIMARY KEY,  nazwa VARCHAR(40), rodzaj ENUM('wiking', 'ptak', 'kobieta'), 
+data_ur DATE, wiek INT);
+INSERT INTO postac VALUES(1, "Bjorn", "Wiking", NULL, NULL);
+INSERT INTO postac VALUES(2, "Drozd", "ptak", 20190101, 2)
+INSERT INTO postac VALUES(3, "Tesciowa", "kobieta", 19710101, 50);
+
+Zad.2
+ CREATE TABLE walizka(id_walizki INT PRIMARY KEY, pojemnosc INT UNSIGNED,
+ kolor ENUM('rozowy', 'czerwony', 'teczowy', 'zolty') NOT NULL DEFAULT 'rozowy', 
+id_wlasciciela INT, FOREIGN KEY (id_wlasciciela) REFERENCES postac(id_postaci));
+
+Zad.3
+CREATE TABLE izba(id_izby INT PRIMARY KEY, adres_budynku VARCHAR(40), nazwa_izby VARCHAR(40), 
+metraz INT UNSIGNED, wlasciciel INT, FOREIGN KEY (wlasciciel) REFERENCES postac(id_postaci));
+ALTER TABLE izba ADD kolor_izby VARCHAR(20) NOT NULL DEFAULT 'czarny';
+ALTER TABLE izba MODIFY kolor_izby VARCHAR(20) AFTER metraz;
+AlTER TABLE izba ADD izba_spi¿arnia VARCHAR (250);
+
+Zad.4
+CREATE TABLE przetwory( id_przetworu INT PRIMARY KEY, rok_produkcji YEAR, id_wykonawcy INT, 
+FOREIGN KEY (id_wykonawcy) REFERENCES postac(id_postaci), zawartosc VARCHAR(40), 
+dodatek VARCHAR(40) NOT NULL DEFAULT 'papryczka chilli', id_konsumenta INT, 
+FOREIGN KEY (id_konsumenta) REFERENCES postac(id_postaci));
+INSERT INTO przetwory VALUES ('1', '2021', '2', 'bigos', 'papryczka chilli' , '4');
+
+Zad.5
+INSERT INTO postac VALUES (4, 'Thor', 'Wiking', 19180212, 123);
+INSERT INTO postac VALUES (5, 'Ornn', 'Wiking', 19231010, 98);
+INSERT INTO postac VALUES (6, 'Byrnjolf', 'Wiking', 19670711, 54);
+INSERT INTO postac VALUES (7, 'Ljot', 'Wiking', 19870605, 34);
+INSERT INTO postac VALUES (8, 'Olaf', 'Wiking', 18671201, 154);
+
+CREATE TABLE statek(id_statku INT PRIMARY KEY, rodzaj_statku ENUM ('wojenny', 'handlowy', 'pasazerski'), 
+data_wodowania DATE, max_ladownosc INT UNSIGNED);
+
+INSERT INTO statek VALUES(1, 'wojenny', 20211103, 5750);
+INSERT INTO statek VALUES(2, 'handlowy', 20191209, 15750);
+
+ALTER TABLE postac ADD funkcja VARCHAR(40); 
+
+update postac set funkcja='kapitan' where nazwa='Bjorn';
+alter table postac add id_statku INT;
+update postac set id_statku='1';
+alter table izba drop column izba_spiarnia;
+drop table izba;
+
+Lekcja 2.
+Zad.1
+alter table przetwory drop foreign key przetwory_ibfk_2;
+delete from postac where id_postaci='4';
+delete from postac where id_postaci='8';
+alter table walizka drop foreign key walizka_ibfk_1;
+alter table przetwory drop foreign key przetwory_ibfk_1;
+alter table postac drop primary key;
+
+Zad.2
+alter table postac add column pesel VARCHAR(11);
+update postac set pesel='11450091565' where id_postaci='7';
+alter table postac add primary key (pesel);
+
+alter table postac drop column rodzaj;
+alter table postac add column rodzaj ENUM('wiking', 'ptak', 'tesciowa', 'syrena');
+insert into postac  values('9', 'Gertruda Nieszczera', NULL, 'syrena', NULL, NULL, '1', '12345678909');
+
+Zad.3
+INSERT INTO statek VALUES(3, 'pasaerski', 20191011, 10750);
+update statek set data_wodowania='19831102' where id_statku='1';
++-----------+---------------+----------------+---------------+
+| id_statku | rodzaj_statku | data_wodowania | max_ladownosc |
++-----------+---------------+----------------+---------------+
+|         1 | wojenny       | 1983-11-02     |          5750 |
+|         2 | handlowy      | 2019-12-09     |         15750 |
+|         3 | pasaerski     | 2019-10-11     |         10750 |
++-----------+---------------+----------------+---------------+
+
+update statek set max_ladownosc='4025' where id_statku = '1';
+
++-----------+---------------+----------------+---------------+
+| id_statku | rodzaj_statku | data_wodowania | max_ladownosc |
++-----------+---------------+----------------+---------------+
+|         1 | wojenny       | 1983-11-02     |          4025 |
+|         2 | handlowy      | 2019-12-09     |         15750 |
+|         3 | pasaerski     | 2019-10-11     |         10750 |
++-----------+---------------+----------------+---------------+
+
+
+
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
+| id_postaci | nazwa               | data_ur    | rodzaj   | wiek | funkcja | id_statku | pesel       |
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
+|          1 | Bjorn               | NULL       | wiking   | NULL | kapitan |         1 | 01072798765 |
+|          3 | Tesciowa            | 1971-01-01 | tesciowa |   50 | NULL    |         1 | 07652766565 |
+|          2 | Drozd               | 2019-01-01 | ptak     |    2 | NULL    |         2 | 07652798765 |
+|          7 | Ljot                | 1987-06-05 | wiking   |   34 | NULL    |         2 | 11450091565 |
+|          6 | Byrnjolf            | 1967-07-11 | wiking   |   54 | NULL    |         2 | 11454221565 |
+|          5 | Ornn                | 1923-10-10 | wiking   |   98 | NULL    |         2 | 11642766565 |
+|          9 | Gertruda Nieszczera | NULL       | syrena   | NULL | NULL    |         1 | 12345678909 |
++------------+---------------------+------------+----------+------+---------+-----------+-------------+
+
+alter table postac add constraint wiek check (wiek<1000);
+Zad.4
+insert into marynarz select * from postac where id_postaci;
+Zad.5 
+delete from marynarz where id_marynarza='10';
+update marynarz set id_statku =NULL ;
+update postac set id_statku =NULL ;
+delete from postac where id_postaci='6';
+delete from marynarz where id_marynarza='6';
+delete from statek where id_statku = '1';
+delete from statek where id_statku = '2';
+delete from statek where id_statku = '3';
+drop table statek;
+
+create table zwierz(id_zwierz INT PRIMARY KEY AUTO_INCREMENT, nazwa VARCHAR(40) NOT NULL, wiek INT UNSIGNED);
+insert into zwierz values(10, 'Loko', 19);
+insert into zwierz values(2, 'Drozd', 2);
+
+Zad.1
+create table kreatura as select * from wikingowie.kreatura;
+create table zasoby as select * from wikingowie.zasoby;
+create table ekwipunek as select * from wikingowie.ekwipunek;
+select * from zasob;
+select * from zasob where rodzaj = 'jedzenie';
+select idzasobu, ilosc from ekwipunek where idkreatury= '1' and '3' and '5';
+
+Zad.2
+select * from kreatura where rodzaj != 'wiedzma' and udzwig > 50;
+select * from zasob where (waga > 2 and waga < 5);
+select * from kreatura where nazwa like  '%or%' and (udzwig > 30 and udzwig < 70);
+
+Zad.3
+select * from zasob where month(dataPozyskania) between '07' and '08';
+select * from zasob order by waga;
+select * from kreatura order by dataUr ASC limit 5;
+
+Zad.4
+select distinct rodzaj from zasob;
+select concat(nazwa,"-", rodzaj) as nazwa_rodzaj from kreatura;
+select *, concat(waga* ilosc) as waga_calkowita from zasob where year(dataPozyskania) between '2000' and '2007';
+
+Zad.5
+select *, concat(waga* ilosc * 0.7) as waga_wlasciwa from zasob;
+select *, concat(waga* ilosc * 0.3) as waga_odpadow from zasob;
+select * from zasob where rodzaj is null;
+select distinct rodzaj from zasob where nazwa like 'Ba%' or nazwa like '%os' order by rodzaj;
+
+Lekcja 4.
+
+Zad.1
+select avg(waga) from kreatura where rodzaj='wiking';
+select avg(waga) as sr_waga  from kreatura group by rodzaj;
+select rodzaj, sum(1) as ilosc from kreatura group by rodzaj;
+
+Zad.2
+select rodzaj, sum(waga) as waga_calkowita from zasob group by rodzaj;
