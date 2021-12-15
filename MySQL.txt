@@ -16,7 +16,7 @@ CREATE TABLE izba(id_izby INT PRIMARY KEY, adres_budynku VARCHAR(40), nazwa_izby
 metraz INT UNSIGNED, wlasciciel INT, FOREIGN KEY (wlasciciel) REFERENCES postac(id_postaci));
 ALTER TABLE izba ADD kolor_izby VARCHAR(20) NOT NULL DEFAULT 'czarny';
 ALTER TABLE izba MODIFY kolor_izby VARCHAR(20) AFTER metraz;
-AlTER TABLE izba ADD izba_spi¿arnia VARCHAR (250);
+AlTER TABLE izba ADD izba_spiÂ¿arnia VARCHAR (250);
 
 Zad.4
 CREATE TABLE przetwory( id_przetworu INT PRIMARY KEY, rok_produkcji YEAR, id_wykonawcy INT, 
@@ -161,22 +161,29 @@ select count(nazwa) as "liczba_nazw_rodzaju", rodzaj from zasob group by rodzaj 
 Zad.3
 select kreatura.nazwa, ekwipunek.ilosc from kreatura inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury;
 
-select kreatura.nazwa as imie, zasob.nazwa as "nazwa_zasobu" from kreatura inner join zasob on kreatura.idKreatury = zasob.idZasobu inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury;
+select kreatura.nazwa as imie, zasob.nazwa as "nazwa_zasobu" from kreatura inner join zasob on kreatura.idKreatury = zasob.idZasobu 
+inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury;
 
-select kreatura.nazwa from kreatura left join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury where ekwipunek.idZasobu is null group by kreatura.nazwa;
+select kreatura.nazwa from kreatura left join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury where ekwipunek.idZasobu 
+is null group by kreatura.nazwa;
 
 Zad.4
-select kreatura.nazwa, zasob.nazwa from kreatura inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury inner join zasob ON ekwipunek.idZasobu = zasob.idZasobu where kreatura.rodzaj = "wiking" and year(dataUr) BETWEEN 1669 AND 1680;
+select kreatura.nazwa, zasob.nazwa from kreatura inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury inner join zasob 
+ON ekwipunek.idZasobu = zasob.idZasobu where kreatura.rodzaj = "wiking" and year(dataUr) BETWEEN 1669 AND 1680;
 
-select kreatura.nazwa from kreatura inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury inner join zasob on ekwipunek.idZasobu = zasob.idZasobu where zasob.rodzaj = "jedzenie" order by dataUr desc limit 5;
+select kreatura.nazwa from kreatura inner join ekwipunek on kreatura.idKreatury = ekwipunek.idKreatury inner join zasob 
+on ekwipunek.idZasobu = zasob.idZasobu where zasob.rodzaj = "jedzenie" order by dataUr desc limit 5;
 DO POPRAWY~!!!
 select concat(kreatura.nazwa, "-",nazwa) as nazwy from kreatura where idKreatury;
 
 Zad.5
-select kreatura.rodzaj, avg(zasob.waga*zasob.ilosc) from kreatura join ekwipunek left outer join zasob on kreatura.idKreatury = ekwipunek.idKreatury and zasob.idZasobu = ekwipunek.idZasobu where kreatura.rodzaj!="malpa"
+select kreatura.rodzaj, avg(zasob.waga*zasob.ilosc) from kreatura join ekwipunek left outer join zasob on 
+kreatura.idKreatury = ekwipunek.idKreatury and zasob.idZasobu = ekwipunek.idZasobu where kreatura.rodzaj!="malpa"
 and kreatura.rodzaj!="waz" and ekwipunek.ilosc<30 group by kreatura.rodzaj;
 
-select k1.rodzaj, k1.nazwa, mlodzi.minimalna_data, k2.nazwa,mlodzi.maksymalna_data from(select rodzaj, min(dataUr) as minimalna_data, max(dataUr) as maksymalna_data from kreatura group by rodzaj) as mlodzi, join kreatura k1 on mlodzi.rodzaj=k1.rodzaj and mlodzi.minimalna_data = k1.dataUr join kreatura k2 on mlodzi.rodzaj = k2.rodzaj and mlodzi.maksymalna_data=k2.dataUr;
+select k1.rodzaj, k1.nazwa, mlodzi.minimalna_data, k2.nazwa,mlodzi.maksymalna_data from(select rodzaj, min(dataUr) as minimalna_data,
+max(dataUr) as maksymalna_data from kreatura group by rodzaj) as mlodzi, join kreatura k1 on mlodzi.rodzaj=k1.rodzaj 
+and mlodzi.minimalna_data = k1.dataUr join kreatura k2 on mlodzi.rodzaj = k2.rodzaj and mlodzi.maksymalna_data=k2.dataUr;
 Lekcja 5.
 
 Zad.1
@@ -185,14 +192,27 @@ create table etapy_wyprawy as select * from wikingowie.etapy_wyprawy;
 create table sektor as select * from wikingowie.sektor;
 create table wyprawa as select * from wikingowie.wyprawa;
 
-select kreatura.idKreatury, kreatura.nazwa, uczestnicy.id_wyprawy from kreatura left join uczestnicy on kreatura.idKreatury = uczestnicy.id_uczestnika where id_wyprawy IS NULL;
+select kreatura.idKreatury, kreatura.nazwa, uczestnicy.id_wyprawy from kreatura left join uczestnicy
+ on kreatura.idKreatury = uczestnicy.id_uczestnika where id_wyprawy IS NULL;
 
-select uczestnicy.id_wyprawy, wyprawa.nazwa, SUM(ekwipunek.ilosc) as suma_ilosci from uczestnicy inner join wyprawa on uczestnicy.id_wyprawy = wyprawa.id_wyprawy inner join ekwipunek on ekwipunek.idKreatury = uczestnicy.id_uczestnika group by id_wyprawy, nazwa;
+select uczestnicy.id_wyprawy, wyprawa.nazwa, SUM(ekwipunek.ilosc) as suma_ilosci from uczestnicy inner join wyprawa
+ on uczestnicy.id_wyprawy = wyprawa.id_wyprawy inner join ekwipunek on ekwipunek.idKreatury = uczestnicy.id_uczestnika
+ group by id_wyprawy, nazwa;
 
 Zad.2
-select wyprawa.nazwa as nazwa_wyprawy, count(uczestnicy.id_uczestnika) as ilosc_uczestnikow, group_concat(kreatura.nazwa) as nazwa_uczestnikow  from wyprawa inner join uczestnicy on wyprawa.id_wyprawy = uczestnicy.id_wyprawy inner join kreatura on uczestnicy.id_uczestnika = kreatura.idKreatury group by wyprawa.nazwa;
+select wyprawa.nazwa as nazwa_wyprawy, count(uczestnicy.id_uczestnika) as ilosc_uczestnikow,
+group_concat(kreatura.nazwa) as nazwa_uczestnikow  from wyprawa inner join uczestnicy on wyprawa.id_wyprawy = uczestnicy.id_wyprawy 
+inner join kreatura on uczestnicy.id_uczestnika = kreatura.idKreatury group by wyprawa.nazwa;
 
-select wyprawa.nazwa as wyprawa, etapy_wyprawy.idEtapu as Etap, sektor.nazwa as sektor, wyprawa.kierownik from etapy_wyprawy inner join wyprawa on wyprawa.id_wyprawy = etapy_wyprawy.idWyprawy inner join sektor on etapy_wyprawy.sektor = sektor.id_sektora;
+select wyprawa.nazwa as wyprawa, etapy_wyprawy.idEtapu as Etap, sektor.nazwa as sektor, 
+wyprawa.kierownik from etapy_wyprawy inner join wyprawa on wyprawa.id_wyprawy = etapy_wyprawy.idWyprawy 
+inner join sektor on etapy_wyprawy.sektor = sektor.id_sektora;
 
+Zad.3
+SELECT sektor.nazwa , IFNULL(COUNT(etapy_wyprawy.sektor),0) AS ile_razy_by_odwiedzany FROM sektor LEFT JOIN etapy_wyprawy 
+ON sektor.id_sektora=etapy_wyprawy.sektor GROUP BY sektor.nazwa;
 
+select kreatura.nazwa, if(count(uczestnicy.id_uczestnika)>0, 'bral udzial w wyprawie', 'nie bral udzialu w wyprawie') as 'czyBralUdzial' from uczestnicy
+right join kreatura on uczestnicy.id_uczestnika = kreatura.idKreatury group by kreatura.nazwa;
 
+Zad.4
