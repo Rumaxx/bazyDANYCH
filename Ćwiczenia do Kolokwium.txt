@@ -1,0 +1,80 @@
+---------------------------------------PRZYKŁADOWE KOLOKWIUM---------------------------------------
+
+CREATE TABLE promotor(pesel CHAR(11) PRIMARY KEY, tytul enum('mgr','dr','prof') 
+DEFAULT 'prof', imie VARCHAR(40) NOT NULL, nazwisko VARCHAR(50) NOT NULL, zarobki
+DOUBLE(10,2) UNSIGNED DEFAULT 2000, dataur DATE);
+\T zad3a (zapis zadania)
+
+CREATE TABLE praca(promotor CHAR(11), nrindeksu CHAR(6), tytulPracy TEXT, ocena enum('dst',
+'dst plus', 'db', 'db plus', 'bdb') DEFAULT 'dst', PRIMARY KEY(promotor, nrindeksu), 
+FOREIGN KEY(promotor) REFERENCES promotor(pesel) ON DELETE CASCADE);
+\T zad3b
+
+INSERT INTO promotor (pesel, tytul, imie, nazwisko)SELECT idKreatury, 'mgr', nazwa, rodzaj
+FROM wikingowie.kreatura WHERE idKreatury = 5; 
+\T zad4
+
+UPDATE promotor SET zarobki = zarobki*2 WHERE tytul = 'mgr';
+\T zad5
+
+SHOW CREATE TABLE praca;
+ALTER TABLE praca DROP FOREIGN KEY praca_ibfk_1;
+SHOW CREATE TABLE praca;
+ALTER TABLE promotor DROP PRIMARY KEY ;
+ALTER TABLE promotor ADD idPracownika INT PRIMARY KEY AUTO_INCREMENT;
+SELECT * FROM promotor;
+\T zad6 
+
+use ligapilki;
+show tables;
+SELECT CONCAT(imie, ' ', nazwisko) AS zawodnik, Dataur, wzrost FROM zawodnicy WHERE 
+wzrost > 180 ORDER BY  Dataur DESC; 
+\T zad7a
+
+SELECT imie, nazwisko FROM zawodnicy WHERE Idzaw NOT IN (SELECT Idzaw FROM udzial);
+-------------------LUB TO ---------------------------------------------------------
+SELECT zawodnicy.imie, zawodnicy.nazwisko FROM zawodnicy LEFT JOIN udzial ON
+zawodnicy.Idzaw = udzial.Idzaw WHERE udzial.Idmeczu IS NULL;
+\T zad7b
+
+SELECT kluby.miasto, kluby.nazwa, COUNT(zawodnicy.imie) AS zawodnicy FROM kluby LEFT JOIN zawodnicy ON 
+kluby.IdKlubu = zawodnicy.IdKlubu GROUP BY kluby.miasto, kluby.nazwa;
+\T zad7c
+
+SELECT COUNT(*), udzial.Idzaw, zawodnicy.imie, zawodnicy.nazwisko FROM udzial 
+JOIN zawodnicy ON zawodnicy.Idzaw = udzial.Idzaw GROUP BY udzial.Idzaw, zawodnicy.imie,
+zawodnicy.nazwisko;
+\T zad7d
+
+SELECT zawodnicy.imie, zawodnicy.nazwisko, SUM(doMInuty - odMinuty + 1) AS liczba_minut
+FROM zawodnicy JOIN udzial ON zawodnicy.Idzaw = udzial.Idzaw JOIN kluby ON 
+zawodnicy.IdKlubu = kluby.Idklubu WHERE nazwa = 'Tecza' GROUP BY zawodnicy.imie, 
+zawodnicy.nazwisko; 
+\T zad7e
+
+SELECT zawodnicy.imie, zawodnicy.nazwisko, zawodnicy.wzrost/100 AS wzrost_metry, COUNT(*) AS 
+liczba_meczy FROM zawodnicy JOIN udzial ON zawodnicy.Idzaw = udzial.Idzaw WHERE imie LIKE 
+'Ja%'  GROUP BY zawodnicy.imie, zawodnicy.nazwisko, wzrost_metry HAVING COUNT(*) >=2;
+\T zad7f
+
+SELECT Idgosc, SUM(goleGosc) FROM mecze GROUP BY Idgosc;
+
+SELECT kluby.nazwa, mecze.Idgosc, SUM(mecze.goleGosc) AS 
+gole FROM mecze JOIN kluby ON kluby.IdKlubu = mecze.Idgosc  
+GROUP BY mecze.Idgosc, kluby.nazwa ORDER BY 3 DESC LIMIT 1;
+\T zad7g
+
+--------------------------Zadania dodatkowe ---------------------------------------------------
+A)
+SELECT * FROM zawodnicy WHERE year(dataur) BETWEEN '1969' AND '1980' ORDER BY Imie ASC LIMIT 3;
+
+B)
+SELECT stadion, CONCAT(SUM(golegosp)+ SUM(golegosc))AS suma_goli FROM mecze GROUP BY stadion;
+
+C)
+
+
+
+
+
+
